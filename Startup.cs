@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using XieChengAPI.Database;
 
 namespace XieChengAPI
 {
@@ -17,6 +19,8 @@ namespace XieChengAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<AddDbContext>(options => { 
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
