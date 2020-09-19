@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using XieChengAPI.Database;
 using Microsoft.Extensions.Configuration;
+using XieChengAPI.Service;
+using FakeXiecheng.API.Services;
 
 namespace XieChengAPI
 {
@@ -30,7 +32,7 @@ namespace XieChengAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-          //  services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
+            services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
             //services.AddSingleton
             //services.AddScoped
             services.AddDbContext<AppDbContext>(option => {
