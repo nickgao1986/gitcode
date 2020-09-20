@@ -20,7 +20,8 @@ namespace XieChengAPI.Database
 
         public DbSet<TouristRoute> TouristRoutes { get; set; }
 
-        public DbSet<TouristRoutePicture> touristRoutePictures { get; set; }
+        public DbSet<TouristRoutePicture> TouristRoutePictures { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
