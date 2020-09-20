@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 namespace FakeXiecheng.API.Dtos
 {
     [TouristRouteTitleMustBeDifferentFromDescriptionAttribute]
-    public class TouristRouteForCreationDto
+    public abstract class TouristRouteForManipulationDto
     {
         [Required(ErrorMessage = "title 不可为空")]
         [MaxLength(100)]
         public string Title { get; set; }
-        public string Description { get; set; }
+        [Required]
+        [MaxLength(1500)]
+        public virtual string Description { get; set; }
         // 计算方式：原价 * 折扣
         public decimal Price { get; set; }
         //public decimal OriginalPrice { get; set; }
@@ -28,10 +30,8 @@ namespace FakeXiecheng.API.Dtos
         public string TravelDays { get; set; }
         public string TripType { get; set; }
         public string DepartureCity { get; set; }
-
         public ICollection<TouristRoutePictureForCreationDto> TouristRoutePictures { get; set; }
-       = new List<TouristRoutePictureForCreationDto>();
+            = new List<TouristRoutePictureForCreationDto>();
 
-      
     }
 }
