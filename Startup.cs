@@ -12,7 +12,7 @@ using XieChengAPI.Database;
 using Microsoft.Extensions.Configuration;
 using XieChengAPI.Service;
 using FakeXiecheng.API.Services;
-
+using AutoMapper;
 namespace XieChengAPI
 {
 
@@ -40,6 +40,8 @@ namespace XieChengAPI
                 //option.UseSqlServer("server=localhost; Database=FakeXiechengDb; User Id=sa; Password=PaSSword12!;");
                 option.UseSqlServer(Configuration["DbContext:ConnectionString"]);
             });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
