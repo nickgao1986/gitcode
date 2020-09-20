@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using XieChengAPI.Service;
+using FakeXiecheng.API.ResourceParameters;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -27,10 +28,16 @@ namespace FakeXiecheng.API.Controllers
             _mapper = mapper;
         }
 
+        // api/touristRoutes?keyword=传入的参数
         [HttpGet]
-        public IActionResult GerTouristRoutes()
+        [HttpHead]
+        public IActionResult GerTouristRoutes(
+            [FromQuery] TouristRouteResourceParamaters paramaters
+        //[FromQuery] string keyword,
+        //string rating // 小于lessThan, 大于largerThan, 等于equalTo lessThan3, largerThan2, equalTo5 
+        )// FromQuery vs FromBody
         {
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes();
+            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(paramaters.Keyword, paramaters.RatingOperator, paramaters.RatingValue);
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("没有旅游路线");
