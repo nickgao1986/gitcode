@@ -15,6 +15,7 @@ using XieChengAPI.Service;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using XieChengAPI.Helper;
 using Microsoft.AspNetCore.Authorization;
+using XieChengAPI.ResourceParameters;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -38,18 +39,19 @@ namespace FakeXiecheng.API.Controllers
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GerTouristRoutes(
-           [FromQuery] TouristRouteResourceParamaters paramaters
-       //[FromQuery] string keyword,
-       //string rating // 小于lessThan, 大于largerThan, 等于equalTo lessThan3, largerThan2, equalTo5 
-       )// FromQuery vs FromBody
+            [FromQuery] TouristRouteResourceParamaters paramaters,
+            [FromQuery] PaginationResourceParamaters paramaters2
+        //[FromQuery] string keyword,
+        //string rating // 小于lessThan, 大于largerThan, 等于equalTo lessThan3, largerThan2, equalTo5 
+        )// FromQuery vs FromBody
         {
             var touristRoutesFromRepo = await _touristRouteRepository
                 .GetTouristRoutesAsync(
                     paramaters.Keyword,
                     paramaters.RatingOperator,
                     paramaters.RatingValue,
-                    paramaters.PageSize,
-                    paramaters.PageNumber
+                    paramaters2.PageSize,
+                    paramaters2.PageNumber
                 );
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
