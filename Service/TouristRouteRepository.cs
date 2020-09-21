@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XieChengAPI.Database;
+using XieChengAPI.Models;
 using XieChengAPI.Service;
 
 namespace FakeXiecheng.API.Services
@@ -64,6 +65,21 @@ namespace FakeXiecheng.API.Services
                 .Where(p => p.TouristRouteId == touristRouteId).ToList();
         }
 
+        public async Task<ShoppingCart> GetShoppingCartByUserId(string userId)
+        {
+            return await _context.ShoppingCarts
+                .Include(s => s.User)
+                .Include(s => s.ShoppingCartItems).ThenInclude(li => li.TouristRoute)
+                .Where(s => s.UserId == userId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task CreateShoppingCart(ShoppingCart shoppingCart)
+        {
+            await _context.ShoppingCarts.AddAsync(shoppingCart);
+        }
+
+
         public TouristRoutePicture GetPicture(int pictureId)
         {
             return _context.TouristRoutePictures.Where(p => p.Id == pictureId).FirstOrDefault();
@@ -116,6 +132,11 @@ namespace FakeXiecheng.API.Services
         public bool Save()
         {
             return (_context.SaveChanges() >= 0);
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return (await _context.SaveChangesAsync() >= 0);
         }
     }
 }

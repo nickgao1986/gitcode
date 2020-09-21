@@ -21,8 +21,4 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Profiles\" />
-  </ItemGroup>
-
 </Project>

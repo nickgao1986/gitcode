@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XieChengAPI.Models;
 
 namespace XieChengAPI.Service
 {
@@ -19,6 +20,10 @@ namespace XieChengAPI.Service
         void DeleteTouristRoute(TouristRoute touristRoute);
         void DeleteTouristRoutes(IEnumerable<TouristRoute> touristRoutes);
         void DeleteTouristRoutePicture(TouristRoutePicture picture);
+
+        public Task CreateShoppingCart(ShoppingCart shoppingCart);
+        Task<ShoppingCart> GetShoppingCartByUserId(string userId);
         bool Save();
+        public Task<bool> SaveAsync();
     }
 }

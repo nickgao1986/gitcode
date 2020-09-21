@@ -25,7 +25,8 @@ namespace XieChengAPI.Database
 
         public DbSet<TouristRoutePicture> TouristRoutePictures { get; set; }
 
-
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<LineItem> LineItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
          /*   modelbuilder.Entity<TouristRoute>().HasData(new TouristRoute()
