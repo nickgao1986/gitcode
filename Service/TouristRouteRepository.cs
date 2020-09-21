@@ -194,6 +194,15 @@ namespace FakeXiecheng.API.Services
             return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
         }
 
+        public async Task<PaginationList<Order>> GetOrdersByUserId(
+          string userId, int pageSize, int pageNumber)
+        {
+            //return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+            IQueryable<Order> result = _context.Orders.Where(o => o.UserId == userId);
+            return await PaginationList<Order>.CreateAsync(pageNumber, pageSize, result);
+        }
+
+
         public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
            string keyword,
            string ratingOperator,

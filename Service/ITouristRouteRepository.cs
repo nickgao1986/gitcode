@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XieChengAPI.Helper;
 using XieChengAPI.Models;
 
 namespace XieChengAPI.Service
@@ -37,7 +38,7 @@ namespace XieChengAPI.Service
         Task<Order> GetOrderById(Guid orderId);
         Task AddOrderAsync(Order order);
 
-        Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
+        Task<PaginationList<Order>> GetOrdersByUserId(string userId, int pageSize, int pageNumber);
 
         Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
          string keyword, string ratingOperator, int? ratingValue
