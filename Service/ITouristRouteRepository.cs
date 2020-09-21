@@ -34,8 +34,10 @@ namespace XieChengAPI.Service
 
         Task<IEnumerable<LineItem>> GeshoppingCartsByIdListAsync(IEnumerable<int> ids);
         void DeleteShoppingCartItems(IEnumerable<LineItem> lineItems);
-
+        Task<Order> GetOrderById(Guid orderId);
         Task AddOrderAsync(Order order);
+
+        Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
 
     }
 }
