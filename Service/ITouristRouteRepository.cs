@@ -28,6 +28,8 @@ namespace XieChengAPI.Service
         Task<ShoppingCart> GetShoppingCartByUserId(string userId);
         bool Save();
         public Task<bool> SaveAsync();
+        Task<LineItem> GetShoppingCartItemByItemId(int lineItemId);
+        void DeleteShoppingCartItem(LineItem lineItem);
         Task AddShoppingCartItem(LineItem lineItem);
     }
 }

@@ -149,5 +149,17 @@ namespace FakeXiecheng.API.Services
         {
             await _context.LineItems.AddAsync(lineItem);
         }
+
+        public async Task<LineItem> GetShoppingCartItemByItemId(int lineItemId)
+        {
+            return await _context.LineItems
+                .Where(li => li.Id == lineItemId)
+                .FirstOrDefaultAsync();
+        }
+
+        public void DeleteShoppingCartItem(LineItem lineItem)
+        {
+            _context.LineItems.Remove(lineItem);
+        }
     }
 }
