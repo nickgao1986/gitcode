@@ -10,7 +10,7 @@ using XieChengAPI.Database;
 namespace XieChengAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200920040121_initialMigration")]
+    [Migration("20200921011335_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -339,7 +339,7 @@ namespace XieChengAPI.Migrations
 
                     b.HasIndex("TouristRouteId");
 
-                    b.ToTable("touristRoutePictures");
+                    b.ToTable("TouristRoutePictures");
 
                     b.HasData(
                         new

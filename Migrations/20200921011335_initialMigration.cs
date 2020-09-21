@@ -33,7 +33,7 @@ namespace XieChengAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "touristRoutePictures",
+                name: "TouristRoutePictures",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -43,9 +43,9 @@ namespace XieChengAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_touristRoutePictures", x => x.Id);
+                    table.PrimaryKey("PK_TouristRoutePictures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_touristRoutePictures_TouristRoutes_TouristRouteId",
+                        name: "FK_TouristRoutePictures_TouristRoutes_TouristRouteId",
                         column: x => x.TouristRouteId,
                         principalTable: "TouristRoutes",
                         principalColumn: "Id",
@@ -76,7 +76,7 @@ namespace XieChengAPI.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "touristRoutePictures",
+                table: "TouristRoutePictures",
                 columns: new[] { "Id", "TouristRouteId", "Url" },
                 values: new object[,]
                 {
@@ -151,15 +151,15 @@ namespace XieChengAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_touristRoutePictures_TouristRouteId",
-                table: "touristRoutePictures",
+                name: "IX_TouristRoutePictures_TouristRouteId",
+                table: "TouristRoutePictures",
                 column: "TouristRouteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "touristRoutePictures");
+                name: "TouristRoutePictures");
 
             migrationBuilder.DropTable(
                 name: "TouristRoutes");

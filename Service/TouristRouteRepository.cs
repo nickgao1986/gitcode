@@ -1,4 +1,7 @@
-﻿using FakeXiecheng.API.Models;
+﻿using FakeXiecheng.API.Dtos;
+using FakeXiecheng.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,7 +25,6 @@ namespace FakeXiecheng.API.Services
         {
             return _context.TouristRoutes.Include(t => t.TouristRoutePictures).FirstOrDefault(n => n.Id == touristRouteId);
         }
-
 
         public IEnumerable<TouristRoute> GetTouristRoutes(
             string keyword,
@@ -67,6 +69,11 @@ namespace FakeXiecheng.API.Services
             return _context.TouristRoutePictures.Where(p => p.Id == pictureId).FirstOrDefault();
         }
 
+        public IEnumerable<TouristRoute> GetTouristRoutesByIDList(IEnumerable<Guid> ids)
+        {
+            return _context.TouristRoutes.Where(t => ids.Contains(t.Id)).ToList();
+        }
+
         public void AddTouristRoute(TouristRoute touristRoute)
         {
             if (touristRoute == null)
@@ -75,11 +82,6 @@ namespace FakeXiecheng.API.Services
             }
             _context.TouristRoutes.Add(touristRoute);
             //_context.SaveChanges();
-        }
-
-        public bool Save()
-        {
-            return (_context.SaveChanges() >= 0);
         }
 
         public void AddTouristRoutePicture(Guid touristRouteId, TouristRoutePicture touristRoutePicture)
@@ -94,6 +96,26 @@ namespace FakeXiecheng.API.Services
             }
             touristRoutePicture.TouristRouteId = touristRouteId;
             _context.TouristRoutePictures.Add(touristRoutePicture);
+        }
+
+        public void DeleteTouristRoute(TouristRoute touristRoute)
+        {
+            _context.TouristRoutes.Remove(touristRoute);
+        }
+
+        public void DeleteTouristRoutePicture(TouristRoutePicture picture)
+        {
+            _context.TouristRoutePictures.Remove(picture);
+        }
+
+        public void DeleteTouristRoutes(IEnumerable<TouristRoute> touristRoutes)
+        {
+            _context.TouristRoutes.RemoveRange(touristRoutes);
+        }
+
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
         }
     }
 }

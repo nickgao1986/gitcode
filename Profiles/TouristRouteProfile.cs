@@ -31,12 +31,15 @@ namespace FakeXiecheng.API.Profiles
                 );
 
             CreateMap<TouristRouteForCreationDto, TouristRoute>()
-              .ForMember(
-                  dest => dest.Id,
-                  opt => opt.MapFrom(src => Guid.NewGuid())
-              );
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => Guid.NewGuid())
+                );
 
             CreateMap<TouristRouteForUpdateDto, TouristRoute>();
+
+            CreateMap<TouristRoute, TouristRouteForUpdateDto>();
+
         }
     }
 }

@@ -337,7 +337,7 @@ namespace XieChengAPI.Migrations
 
                     b.HasIndex("TouristRouteId");
 
-                    b.ToTable("touristRoutePictures");
+                    b.ToTable("TouristRoutePictures");
 
                     b.HasData(
                         new

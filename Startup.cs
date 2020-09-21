@@ -2,27 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using XieChengAPI.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using XieChengAPI.Database;
 using Microsoft.Extensions.Configuration;
-using XieChengAPI.Service;
-using FakeXiecheng.API.Services;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
+using XieChengAPI.Service;
+using FakeXiecheng.API.Services;
 
 namespace XieChengAPI
 {
-
-    
     public class Startup
     {
-
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
@@ -38,7 +37,12 @@ namespace XieChengAPI
                 //setupAction.OutputFormatters.Add(
                 //    new XmlDataContractSerializerOutputFormatter()    
                 //);
-            }).AddXmlDataContractSerializerFormatters()
+            })
+            .AddNewtonsoftJson(setupAction => {
+                setupAction.SerializerSettings.ContractResolver =
+                    new CamelCasePropertyNamesContractResolver();
+            })
+            .AddXmlDataContractSerializerFormatters()
             .ConfigureApiBehaviorOptions(setupAction =>
             {
                 setupAction.InvalidModelStateResponseFactory = context =>
@@ -61,12 +65,12 @@ namespace XieChengAPI
             services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
             //services.AddSingleton
             //services.AddScoped
-            services.AddDbContext<AppDbContext>(option => {
-                //option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FakeXiechengDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                //option.UseSqlServer("server=localhost; Database=FakeXiechengDb; User Id=sa; Password=PaSSword12!;");
-                option.UseSqlServer(Configuration["DbContext:ConnectionString"]);
+
+            services.AddDbContext<AppDbContext>(options => {
+                options.UseSqlServer(Configuration["DbContext:ConnectionString"]);
             });
 
+            // É¨ÃèprofileÎÄ¼þ
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
@@ -82,6 +86,17 @@ namespace XieChengAPI
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapGet("/test", async context =>
+                //{
+                //    throw new Exception("test");
+                //    //await context.Response.WriteAsync("Hello from test!");
+                //});
+
+                //endpoints.MapGet("/", async context =>
+                //{
+                //    await context.Response.WriteAsync("Hello World!");
+                //});
+
                 endpoints.MapControllers();
             });
         }
