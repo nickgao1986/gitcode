@@ -37,13 +37,20 @@ namespace FakeXiecheng.API.Controllers
         // api/touristRoutes?keyword=传入的参数
         [HttpGet]
         [HttpHead]
-        public IActionResult GerTouristRoutes(
-            [FromQuery] TouristRouteResourceParamaters paramaters
-        //[FromQuery] string keyword,
-        //string rating // 小于lessThan, 大于largerThan, 等于equalTo lessThan3, largerThan2, equalTo5 
-        )// FromQuery vs FromBody
+        public async Task<IActionResult> GerTouristRoutes(
+           [FromQuery] TouristRouteResourceParamaters paramaters
+       //[FromQuery] string keyword,
+       //string rating // 小于lessThan, 大于largerThan, 等于equalTo lessThan3, largerThan2, equalTo5 
+       )// FromQuery vs FromBody
         {
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(paramaters.Keyword, paramaters.RatingOperator, paramaters.RatingValue);
+            var touristRoutesFromRepo = await _touristRouteRepository
+                .GetTouristRoutesAsync(
+                    paramaters.Keyword,
+                    paramaters.RatingOperator,
+                    paramaters.RatingValue,
+                    paramaters.PageSize,
+                    paramaters.PageNumber
+                );
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("没有旅游路线");

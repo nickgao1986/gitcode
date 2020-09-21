@@ -39,5 +39,10 @@ namespace XieChengAPI.Service
 
         Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
 
+        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
+         string keyword, string ratingOperator, int? ratingValue
+         , int pageSize, int pageNumber);
+
+
     }
 }

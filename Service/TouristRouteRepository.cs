@@ -193,5 +193,44 @@ namespace FakeXiecheng.API.Services
             return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
         }
 
+        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
+           string keyword,
+           string ratingOperator,
+           int? ratingValue,
+           int pageSize,
+           int pageNumber
+       )
+        {
+            IQueryable<TouristRoute> result = _context
+                .TouristRoutes
+                .Include(t => t.TouristRoutePictures);
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                keyword = keyword.Trim();
+                result = result.Where(t => t.Title.Contains(keyword));
+            }
+            if (ratingValue >= 0)
+            {
+                result = ratingOperator switch
+                {
+                    "largerThan" => result.Where(t => t.Rating >= ratingValue),
+                    "lessThan" => result.Where(t => t.Rating <= ratingValue),
+                    _ => result.Where(t => t.Rating == ratingValue),
+                };
+            }
+
+            // pagination
+            // skip
+            var skip = (pageNumber - 1) * pageSize;
+            result = result.Skip(skip);
+            // 以pagesize为标准显示一定量的数据
+            result = result.Take(pageSize);
+
+            // include vs join
+            return await result.ToListAsync();
+        }
+
+
+
     }
 }
