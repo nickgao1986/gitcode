@@ -12,6 +12,8 @@ using FakeXiecheng.API.ResourceParameters;
 using FakeXiecheng.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using XieChengAPI.Service;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using XieChengAPI.Helper;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -139,5 +141,35 @@ namespace FakeXiecheng.API.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{touristRouteId}")]
+        public IActionResult DeleteTouristRoute([FromRoute] Guid touristRouteId)
+        {
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            {
+                return NotFound("旅游路线找不到");
+            }
+
+            var touristRoute = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            _touristRouteRepository.DeleteTouristRoute(touristRoute);
+            _touristRouteRepository.Save();
+
+            return NoContent();
+        }
+
+        [HttpDelete("({touristIDs})")]
+        public IActionResult DeleteByIDs(
+             [ModelBinder(BinderType = typeof(ArrayModelBinder))][FromRoute]IEnumerable<Guid> touristIDs)
+        {
+            if (touristIDs == null)
+            {
+                return BadRequest();
+            }
+
+            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutesByIDList(touristIDs);
+            _touristRouteRepository.DeleteTouristRoutes(touristRoutesFromRepo);
+            _touristRouteRepository.Save();
+
+            return NoContent();
+        }
     }
 }
