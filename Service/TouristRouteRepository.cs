@@ -138,5 +138,16 @@ namespace FakeXiecheng.API.Services
         {
             return (await _context.SaveChangesAsync() >= 0);
         }
+
+        public async Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId)
+        {
+            return await _context.TouristRoutes.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == touristRouteId);
+        }
+
+
+        public async Task AddShoppingCartItem(LineItem lineItem)
+        {
+            await _context.LineItems.AddAsync(lineItem);
+        }
     }
 }

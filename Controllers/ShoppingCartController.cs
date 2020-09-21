@@ -9,6 +9,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using XieChengAPI.Dtos;
+using XieChengAPI.Models;
 using XieChengAPI.Service;
 
 namespace XieChengAPI.Controllers
@@ -45,5 +46,45 @@ namespace XieChengAPI.Controllers
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
         }
+
+
+        [HttpPost("items")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> AddShoppingCartItem(
+           [FromBody] AddShoppingCartItemDto addShoppingCartItemDto
+       )
+        {
+            // 1 获得当前用户
+            var userId = _httpContextAccessor
+                .HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            // 2 使用userid获得购物车
+            var shoppingCart = await _touristRouteRepository
+                .GetShoppingCartByUserId(userId);
+
+            // 3 创建lineItem
+            var touristRoute = await _touristRouteRepository
+                .GetTouristRouteAsync(addShoppingCartItemDto.TouristRouteId);
+            if (touristRoute == null)
+            {
+                return NotFound("旅游路线不存在");
+            }
+
+            var lineItem = new LineItem()
+            {
+                TouristRouteId = addShoppingCartItemDto.TouristRouteId,
+                ShoppingCartId = shoppingCart.Id,
+                OriginalPrice = touristRoute.OriginalPrice,
+                DiscountPresent = touristRoute.DiscountPresent
+            };
+
+            // 4 添加lineitem，并保存数据库
+            await _touristRouteRepository.AddShoppingCartItem(lineItem);
+            await _touristRouteRepository.SaveAsync();
+
+            return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
+        }
+
+
     }
 }

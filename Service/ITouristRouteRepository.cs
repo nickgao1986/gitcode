@@ -10,6 +10,9 @@ namespace XieChengAPI.Service
     public interface ITouristRouteRepository
     {
         IEnumerable<TouristRoute> GetTouristRoutes(string keyword, string ratingOperator, int? ratingValue);
+        Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId);
+
+
         TouristRoute GetTouristRoute(Guid touristRouteId);
         bool TouristRouteExists(Guid touristRouteId);
         IEnumerable<TouristRoutePicture> GetPicturesByTouristRouteId(Guid touristRouteId);
@@ -25,5 +28,6 @@ namespace XieChengAPI.Service
         Task<ShoppingCart> GetShoppingCartByUserId(string userId);
         bool Save();
         public Task<bool> SaveAsync();
+        Task AddShoppingCartItem(LineItem lineItem);
     }
 }
