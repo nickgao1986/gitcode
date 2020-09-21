@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XieChengAPI.Database;
+using XieChengAPI.Helper;
 using XieChengAPI.Models;
 using XieChengAPI.Service;
 
@@ -219,15 +220,7 @@ namespace FakeXiecheng.API.Services
                 };
             }
 
-            // pagination
-            // skip
-            var skip = (pageNumber - 1) * pageSize;
-            result = result.Skip(skip);
-            // 以pagesize为标准显示一定量的数据
-            result = result.Take(pageSize);
-
-            // include vs join
-            return await result.ToListAsync();
+            return await PaginationList<TouristRoute>.CreateAsync(pageNumber, pageSize, result);
         }
 
 
