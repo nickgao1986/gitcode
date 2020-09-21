@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using XieChengAPI.Models;
 
 namespace XieChengAPI
 {
@@ -37,7 +38,7 @@ namespace XieChengAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<AppDbContext>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

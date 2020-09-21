@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using XieChengAPI.Dtos;
+using XieChengAPI.Models;
 
 namespace XieChengAPI.Controllers
 {
@@ -19,13 +20,13 @@ namespace XieChengAPI.Controllers
     public class AuthenticateController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AuthenticateController(
             IConfiguration configuration,
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager
         )
         {
             _configuration = configuration;
@@ -59,7 +60,7 @@ namespace XieChengAPI.Controllers
             {
                 // sub
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                //new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, "Admin")
             };
             var roleNames = await _userManager.GetRolesAsync(user);
             foreach (var roleName in roleNames)
@@ -92,7 +93,7 @@ namespace XieChengAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             // 1 使用用户名创建用户对象
-            var user = new IdentityUser()
+            var user = new ApplicationUser()
             {
                 UserName = registerDto.Email,
                 Email = registerDto.Email

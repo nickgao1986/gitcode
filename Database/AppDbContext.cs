@@ -9,10 +9,11 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using XieChengAPI.Models;
 
 namespace XieChengAPI.Database
 {
-    public class AppDbContext: IdentityDbContext<IdentityUser>
+    public class AppDbContext: IdentityDbContext<ApplicationUser>
     {
 
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
