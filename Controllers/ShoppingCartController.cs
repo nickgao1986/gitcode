@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using XieChengAPI.Dtos;
+using XieChengAPI.Helper;
 using XieChengAPI.Models;
 using XieChengAPI.Service;
 
@@ -98,6 +100,23 @@ namespace XieChengAPI.Controllers
             }
 
             _touristRouteRepository.DeleteShoppingCartItem(lineItem);
+            await _touristRouteRepository.SaveAsync();
+
+            return NoContent();
+        }
+
+
+        [HttpDelete("items/({itemIDs})")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> RemoveShoppingCartItems(
+         [ModelBinder(BinderType = typeof(ArrayModelBinder))]
+            [FromRoute] IEnumerable<int> itemIDs
+     )
+        {
+            var lineitems = await _touristRouteRepository
+                .GeshoppingCartsByIdListAsync(itemIDs);
+
+            _touristRouteRepository.DeleteShoppingCartItems(lineitems);
             await _touristRouteRepository.SaveAsync();
 
             return NoContent();

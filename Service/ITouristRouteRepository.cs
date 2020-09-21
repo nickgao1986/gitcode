@@ -31,5 +31,9 @@ namespace XieChengAPI.Service
         Task<LineItem> GetShoppingCartItemByItemId(int lineItemId);
         void DeleteShoppingCartItem(LineItem lineItem);
         Task AddShoppingCartItem(LineItem lineItem);
+
+        Task<IEnumerable<LineItem>> GeshoppingCartsByIdListAsync(IEnumerable<int> ids);
+        void DeleteShoppingCartItems(IEnumerable<LineItem> lineItems);
+
     }
 }
