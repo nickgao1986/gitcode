@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace XieChengAPI.Database
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext: IdentityDbContext<IdentityUser>
     {
 
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
