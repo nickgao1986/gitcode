@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using XieChengAPI.Service;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using XieChengAPI.Helper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -82,6 +83,7 @@ namespace FakeXiecheng.API.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public IActionResult CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
         {
             var touristRouteModel = _mapper.Map<TouristRoute>(touristRouteForCreationDto);
