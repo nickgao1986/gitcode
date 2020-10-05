@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using XieChengAPI.ResourceParameters;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using FakeXiecheng.API.Helper;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -58,6 +59,7 @@ namespace FakeXiecheng.API.Controllers
                 ResourceUriType.PreviousPage => _urlHelper.Link("GetTouristRoutes",
                     new
                     {
+                        fields = paramaters.Fields,
                         orderBy = paramaters.OrderBy,
                         keyword = paramaters.Keyword,
                         rating = paramaters.Rating,
@@ -67,6 +69,7 @@ namespace FakeXiecheng.API.Controllers
                 ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
                     new
                     {
+                        fields = paramaters.Fields,
                         orderBy = paramaters.OrderBy,
                         keyword = paramaters.Keyword,
                         rating = paramaters.Rating,
@@ -76,6 +79,7 @@ namespace FakeXiecheng.API.Controllers
                 _ => _urlHelper.Link("GetTouristRoutes",
                     new
                     {
+                        fields = paramaters.Fields,
                         orderBy = paramaters.OrderBy,
                         keyword = paramaters.Keyword,
                         rating = paramaters.Rating,
@@ -142,7 +146,8 @@ namespace FakeXiecheng.API.Controllers
             Response.Headers.Add("x-pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-            return Ok(touristRoutesDto);
+           
+            return Ok(touristRoutesDto.ShapeData(paramaters.Fields));
         }
 
 
