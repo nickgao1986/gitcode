@@ -29,7 +29,7 @@ namespace FakeXiecheng.API.Controllers
                 throw new ArgumentNullException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetPictureListForTouristRoute")]
         public IActionResult GetPictureListForTouristRoute(Guid touristRouteId)
         {
             if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
@@ -64,7 +64,7 @@ namespace FakeXiecheng.API.Controllers
             return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo));
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateTouristRoutePicture")]
         public IActionResult CreateTouristRoutePicture(
             [FromRoute] Guid touristRouteId,
             [FromBody] TouristRoutePictureForCreationDto touristRoutePictureForCreationDto

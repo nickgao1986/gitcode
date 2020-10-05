@@ -107,6 +107,13 @@ namespace FakeXiecheng.API.Controllers
                 return BadRequest("请输入正确的排序参数");
             }
 
+            if (!_propertyMappingService
+              .IsPropertiesExists<TouristRouteDto>(paramaters.Fields))
+            {
+                return BadRequest("请输入正确的塑性参数");
+            }
+
+
             var touristRoutesFromRepo = await _touristRouteRepository
                 .GetTouristRoutesAsync(
                     paramaters.Keyword,
@@ -150,11 +157,68 @@ namespace FakeXiecheng.API.Controllers
             return Ok(touristRoutesDto.ShapeData(paramaters.Fields));
         }
 
+        private IEnumerable<LinkDto> CreateLinkForTouristRoute(
+           Guid touristRouteId,
+           string fields)
+        {
+            var links = new List<LinkDto>();
+
+            links.Add(
+                new LinkDto(
+                    Url.Link("GetTouristRouteById", new { touristRouteId, fields }),
+                    "self",
+                    "GET"
+                    )
+                );
+
+            // 更新
+            links.Add(
+                new LinkDto(
+                    Url.Link("UpdateTouristRoute", new { touristRouteId }),
+                    "update",
+                    "PUT"
+                    )
+                );
+
+            // 局部更新 
+            links.Add(
+                new LinkDto(
+                    Url.Link("PartiallyUpdateTouristRoute", new { touristRouteId }),
+                    "partially_update",
+                    "PATCH")
+                );
+
+            // 删除
+            links.Add(
+                new LinkDto(
+                    Url.Link("DeleteTouristRoute", new { touristRouteId }),
+                    "delete",
+                    "DELETE")
+                );
+
+            // 获取路线图片
+            links.Add(
+                new LinkDto(
+                    Url.Link("GetPictureListForTouristRoute", new { touristRouteId }),
+                    "get_pictures",
+                    "GET")
+                );
+
+            // 添加新图片
+            links.Add(
+                new LinkDto(
+                    Url.Link("CreateTouristRoutePicture", new { touristRouteId }),
+                    "create_picture",
+                    "POST")
+                );
+
+            return links;
+        }
 
 
         // api/touristroutes/{touristRouteId}
         [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]
-        public IActionResult GetTouristRouteById(Guid touristRouteId)
+        public IActionResult GetTouristRouteById(Guid touristRouteId, string fields)
         {
             var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
             if (touristRouteFromRepo == null)
@@ -178,26 +242,42 @@ namespace FakeXiecheng.API.Controllers
             //    DepartureCity = touristRouteFromRepo.DepartureCity.ToString()
             //};
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
-            return Ok(touristRouteDto);
+            //return Ok(touristRouteDto.ShapeData(fields));
+
+            var linkDtos = CreateLinkForTouristRoute(touristRouteId, fields);
+
+            var result = touristRouteDto.ShapeData(fields)
+                as IDictionary<string, object>;
+            result.Add("links", linkDtos);
+
+            return Ok(result);
         }
 
 
         [HttpPost]
         [Authorize]
-        public IActionResult CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
+        public async Task<IActionResult> CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
         {
             var touristRouteModel = _mapper.Map<TouristRoute>(touristRouteForCreationDto);
             _touristRouteRepository.AddTouristRoute(touristRouteModel);
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
             var touristRouteToReture = _mapper.Map<TouristRouteDto>(touristRouteModel);
+
+            var links = CreateLinkForTouristRoute(touristRouteModel.Id, null);
+
+            var result = touristRouteToReture.ShapeData(null)
+                as IDictionary<string, object>;
+
+            result.Add("links", links);
+
             return CreatedAtRoute(
                 "GetTouristRouteById",
-                new { touristRouteId = touristRouteToReture.Id },
-                touristRouteToReture
+                new { touristRouteId = result["Id"] },
+                result
             );
         }
 
-        [HttpPut("{touristRouteId}")]
+        [HttpPut("{touristRouteId}", Name = "UpdateTouristRoute")]
         public IActionResult UpdateTouristRoute(
            [FromRoute]Guid touristRouteId,
            [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto
@@ -219,7 +299,7 @@ namespace FakeXiecheng.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{touristRouteId}")]
+        [HttpPatch("{touristRouteId}", Name = "PartiallyUpdateTouristRoute")]
         public IActionResult PartiallyUpdateTouristRoute(
             [FromRoute]Guid touristRouteId,
             [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> patchDocument
@@ -243,7 +323,7 @@ namespace FakeXiecheng.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{touristRouteId}")]
+        [HttpDelete("{touristRouteId}", Name = "DeleteTouristRoute")]
         public IActionResult DeleteTouristRoute([FromRoute] Guid touristRouteId)
         {
             if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
