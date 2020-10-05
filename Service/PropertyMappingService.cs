@@ -43,5 +43,34 @@ namespace FakeXiecheng.API.Services
                 $"Cannot find exact property mapping instance for <{typeof(TSource)},{typeof(TDestination)}");
 
         }
+
+        public bool IsMappingExists<TSource, TDestination>(string fields)
+        {
+            var propertyMapping = GetPropertyMapping<TSource, TDestination>();
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                return true;
+            }
+
+            //逗号来分隔字段字符串
+            var fieldsAfterSplit = fields.Split(",");
+
+            foreach (var field in fieldsAfterSplit)
+            {
+                // 去掉空格
+                var trimmedField = field.Trim();
+                // 获得属性名称字符串
+                var indexOfFirstSpace = trimmedField.IndexOf(" ");
+                var propertyName = indexOfFirstSpace == -1 ?
+                    trimmedField : trimmedField.Remove(indexOfFirstSpace);
+
+                if (!propertyMapping.ContainsKey(propertyName))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
