@@ -10,7 +10,9 @@ namespace XieChengAPI.Service
 {
     public interface ITouristRouteRepository
     {
-        IEnumerable<TouristRoute> GetTouristRoutes(string keyword, string ratingOperator, int? ratingValue);
+        Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
+           string keyword, string ratingOperator, int? ratingValue
+           , int pageSize, int pageNumber);
         Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId);
 
 
@@ -40,9 +42,7 @@ namespace XieChengAPI.Service
 
         Task<PaginationList<Order>> GetOrdersByUserId(string userId, int pageSize, int pageNumber);
 
-        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(
-         string keyword, string ratingOperator, int? ratingValue
-         , int pageSize, int pageNumber);
+    
 
 
     }

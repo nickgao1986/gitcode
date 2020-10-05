@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using XieChengAPI.Helper;
 using Microsoft.AspNetCore.Authorization;
 using XieChengAPI.ResourceParameters;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -25,18 +27,59 @@ namespace FakeXiecheng.API.Controllers
     {
         private ITouristRouteRepository _touristRouteRepository;
         private readonly IMapper _mapper;
+        private readonly IUrlHelper _urlHelper;
 
         public TouristRoutesController(
             ITouristRouteRepository touristRouteRepository,
-            IMapper mapper
+            IMapper mapper,
+            IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor
         )
         {
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+        }
+
+       
+
+        private string GenerateTouristRouteResourceURL(
+            TouristRouteResourceParamaters paramaters,
+            PaginationResourceParamaters paramaters2,
+            ResourceUriType type
+        )
+        {
+            return type switch
+            {
+                ResourceUriType.PreviousPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramaters2.PageNumber - 1,
+                        pageSize = paramaters2.PageSize
+                    }),
+                ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramaters2.PageNumber + 1,
+                        pageSize = paramaters2.PageSize
+                    }),
+                _ => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramaters2.PageNumber,
+                        pageSize = paramaters2.PageSize
+                    })
+            };
         }
 
         // api/touristRoutes?keyword=传入的参数
-        [HttpGet]
+        [HttpGet(Name = "GetTouristRoutes")]
         [HttpHead]
         public async Task<IActionResult> GerTouristRoutes(
             [FromQuery] TouristRouteResourceParamaters paramaters,
@@ -58,8 +101,35 @@ namespace FakeXiecheng.API.Controllers
                 return NotFound("没有旅游路线");
             }
             var touristRoutesDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
+
+            var previousPageLink = touristRoutesFromRepo.HasPrevious
+                ? GenerateTouristRouteResourceURL(
+                    paramaters, paramaters2, ResourceUriType.PreviousPage)
+                : null;
+
+            var nextPageLink = touristRoutesFromRepo.HasNext
+                ? GenerateTouristRouteResourceURL(
+                    paramaters, paramaters2, ResourceUriType.NextPage)
+                : null;
+
+            // x-pagination
+            var paginationMetadata = new
+            {
+                previousPageLink,
+                nextPageLink,
+                totalCount = touristRoutesFromRepo.TotalCount,
+                pageSize = touristRoutesFromRepo.PageSize,
+                currentPage = touristRoutesFromRepo.CurrentPage,
+                totalPages = touristRoutesFromRepo.TotalPages
+            };
+
+            Response.Headers.Add("x-pagination",
+                Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
             return Ok(touristRoutesDto);
         }
+
+
 
         // api/touristroutes/{touristRouteId}
         [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]

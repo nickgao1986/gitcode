@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using XieChengAPI.Models;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace XieChengAPI
 {
@@ -99,6 +100,11 @@ namespace XieChengAPI
 
             // É¨ÃèprofileÎÄ¼þ
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddHttpClient();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
