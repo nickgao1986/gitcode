@@ -8,6 +8,7 @@ namespace FakeXiecheng.API.ResourceParameters
 {
     public class TouristRouteResourceParamaters
     {
+        public string OrderBy { get; set; }
         private int _pageNumber = 1;
         public int PageNumber
         {

@@ -1,4 +1,5 @@
 ﻿using FakeXiecheng.API.Dtos;
+using FakeXiecheng.API.Helper;
 using FakeXiecheng.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,12 @@ namespace FakeXiecheng.API.Services
     public class TouristRouteRepository : ITouristRouteRepository
     {
         private readonly AppDbContext _context;
-
-        public TouristRouteRepository(AppDbContext appDbContext)
+        private readonly IPropertyMappingService _propertyMappingService;
+        public TouristRouteRepository(AppDbContext appDbContext, IPropertyMappingService propertyMappingService)
         {
             _context = appDbContext;
+            _propertyMappingService = propertyMappingService;
+
         }
 
         public TouristRoute GetTouristRoute(Guid touristRouteId)
@@ -61,7 +64,8 @@ namespace FakeXiecheng.API.Services
            string ratingOperator,
            int? ratingValue,
            int pageSize,
-           int pageNumber
+           int pageNumber,
+             string orderBy
        )
         {
             IQueryable<TouristRoute> result = _context
@@ -80,6 +84,14 @@ namespace FakeXiecheng.API.Services
                     "lessThan" => result.Where(t => t.Rating <= ratingValue),
                     _ => result.Where(t => t.Rating == ratingValue),
                 };
+            }
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                var touristRouteMappingDictionary = _propertyMappingService
+                    .GetPropertyMapping<TouristRouteDto, TouristRoute>();
+
+                result = result.ApplySort(orderBy, touristRouteMappingDictionary);
             }
 
             // include vs join

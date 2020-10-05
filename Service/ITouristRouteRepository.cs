@@ -12,7 +12,7 @@ namespace XieChengAPI.Service
     {
         Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
            string keyword, string ratingOperator, int? ratingValue
-           , int pageSize, int pageNumber);
+           , int pageSize, int pageNumber, string orderBy);
         Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId);
 
 
